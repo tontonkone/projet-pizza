@@ -1,4 +1,4 @@
-# Projet Individuel Node.js
+# Projet Individuel Node.js Debut
 
 L'objectif du projet est de réaliser un système de gestion d'une pizzeria avec deux applications :
 
