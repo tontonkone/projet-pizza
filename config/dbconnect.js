@@ -12,11 +12,11 @@
 import mysql from 'mysql';
 
 
-const conn$ = mysql.createConnection({
+ const conn$ = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "pizzas",
+    database: "tesresto",
 })
 conn$.connect(function(err) {
         if (err) {
@@ -26,3 +26,4 @@ conn$.connect(function(err) {
     
         console.log('connected as id ' + conn$.threadId);
     });
+export default conn$

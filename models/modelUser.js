@@ -1,25 +1,8 @@
 
 import '../config/dbconnect';
 
-class UserModel{
+class User{
 
 
 
-
-
-
-    static async getUsers(){
-
-        return new Promise((resolve)=>{
-
-            conn$.query(`
-            SELECT * FROM user
-            `,[],(error, result)=>{
-
-                if (!error){
-                    resolve(result)
-                }
-            })
-        })
-    }
 }

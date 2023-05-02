@@ -12,6 +12,7 @@ import routerUser from './routes/routerUser.js'
 import bodyParser from 'body-parser'
 import express from 'express';
 import session from 'express-session';
+import layouts from 'express-ejs-layouts';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import './config/dbconnect.js';
@@ -23,22 +24,14 @@ const app = express();
 
 /**
  * APP USE ******************************
- * *************************************
- */
-app.use(cors());
-app.use((err, req, res, next) => {
+ * ********************************
+/* app.use(routerUser) */
 
-    err.statusCode = err.statusCode || 500;
-    err.message = err.message || " Internal Server Error";
-    res.status(err.statusCode).json({
-        message:err.message,
-    })
-})
-app.use(routerUser)
 app.use(express.static('public'))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended:true}))
-
+app.use(express.urlencoded({ extended: true}))
+app.use(express.json())
+app.use(routerUser)
+app.use(cors())
 /**
  * APP SET ******************************
  * *************************************

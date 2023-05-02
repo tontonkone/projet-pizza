@@ -1,15 +1,16 @@
+import { register } from '../controllers/controllerUser.js';
 import { Router} from 'express';
 
 
 
 const router = Router()
 
-router.get('/', (req,res)=>{
-    res.render('register')
+router.post('/register', (req,res)=>{
+    register(req,res)
 });
-router.get('/login', (req,res)=>{
+router.get('/', (req,res)=>{
 
-    res.render('login')
+    res.render('register')
 })
 
 
