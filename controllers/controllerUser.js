@@ -1,56 +1,65 @@
 import bcrypt  from 'bcryptjs';
-import conn$ from '../config/dbconnect.js'
+import {User} from '../models/modelUser.js'
+import session from 'express-session';
+import LocalStrategy from 'passport-local'
 
 
+/**
+ * inscriptions 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 export const register = async (req,res)=>{
 
     try{
+        //recuperation des name du post et on les mets dans des varible
         const { username, password, email, password2 } = req.body;
-        conn$.query(`
-            SELECT *
-            FROM users
-            WHERE email = ?
-            `, [email], (err, result) => {
 
-            if (result.length > 0) {
+            //verification si le mail est dans la bd
+           const result = User.findOne({email:email});
 
-                return res.render('register', {
-                    msg: 'cet email existe'
-                })
-            }
+        if (result){
 
-            else if (!username || !email || !password || !password2) {
-                return res.render('register', { msg: 'Tous les champs sont obligatoire' });
-            }
+                if (result.length > 0) {
 
-            else if (password !== password2) {
-                return res.render('register', { msg: 'verifier vos mots passes' });
-            }
+                    return res.render('register', {
+                        msg: 'cet email existe'
+                    })
+                }
 
-            else if (password.length < 3) {
-                return res.render('register', { msg: 'trop court mdp' });
-            } else {
-                bcrypt.hash(password, 10, (err, hash) => {
+                else if (!username || !email || !password || !password2) {
+                    return res.render('register', { msg: 'Tous les champs sont obligatoire' });
+                }
 
-                    if (err) {
-                        return res.render('register', { msg: "une erreur s'est produite" })
-                    } else {
-                        conn$.query(`
-                        INSERT INTO users (name, password, email)
-                        VALUES(?,?,?)
-                    `, [username, hash, email], (err, result) => {
-                            if (err) {
-                                return res.render('register', { msg: "une erreur s'est produite" })
-                            } else {
+                else if (password !== password2) {
+                    return res.render('register', { msg: 'verifier vos mots passes' });
+                }
 
-                                return res.render('register', { msg_success: "register good" })
-                            }
-                        })
-                    }
-                })
-            }
+                else if (password.length < 3) {
+                    return res.render('register', { msg: 'trop court mdp' });
+                } else {
+                    //on hash le mdp avant l'envoi
+                    bcrypt.genSalt(10,(err, hash) => {
 
-        })
+                            if (err) throw err
+
+                            const newUser = new User({
+                                username,
+                                email,
+                                password
+                            });
+                            newUser.password = hash
+                            newUser.save()
+                                .then(user => res.render('register', { msg_success: "register good" }))
+                                .catch(er => console.log(er))
+                        }
+
+                    )
+                }
+
+        
+        }
     
     }catch (error){
         console.log(error)
@@ -58,10 +67,51 @@ export const register = async (req,res)=>{
     
 }
 
-export const login = async (req,res)=>{
+/**
+ * connexions
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+
+export const  loginVer=(req, res, next) => {
+
+    const{email,password} = req.body
+    User.findOne({ email:email})
+    .then(user => {
+        
+        if(user){
+            let match = bcrypt.compare(password,user.password)
+            if (match) {
+
+                console.log(user.is_admin)
+                if(user.is_admin){
+                    req.session.is_admin = user.is_admin;
+                    req.session.user_id = user._id
+                    res.redirect('/admin/home')
+                }else{
+                    req.session.user_id = user._id
+                    res.redirect('/home')
+                }
+            }
+        }else{
+            res.render('login',{msg:'not found'})
+        }
+    })
+}
+
+
+export const loginload = (req,res)=> {
+    res.render('home')
+}
+
+export const deconnexion = (req, res)=>{
 
     try {
         
+        req.session.destroy()
+        res.redirect('/')
+
     } catch (error) {
         console.log(error)
     }

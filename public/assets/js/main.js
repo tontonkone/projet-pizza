@@ -13,7 +13,8 @@ if(succes || danger){
 }
 
 function removeData(data){
-    setTimeout(() => {
+    setTimeout((e) => {
         data.remove()
+        e.target.value = ""
     }, 4000);
 }

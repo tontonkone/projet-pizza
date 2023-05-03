@@ -21,8 +21,11 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
+    "mongoose": "^7.1.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.2.4",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
     "uuid": "^9.0.0"
   }
 }
