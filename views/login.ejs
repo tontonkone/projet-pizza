@@ -28,7 +28,11 @@
                             <div class="row">
                                 <nav class="nav font-weight-500 mb-1 mb-sm-2 mb-lg-5 px-sm-2 px-lg-5"> <a class="nav-link" href="#">Careers</a> <a class="nav-link ac" href="#">Students</a> <a class="nav-link" href="#">Admission</a> </nav>
                             </div>
-
+                            <% if (locals.msg){ %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" id="pop">
+                                    <%= msg %>
+                                </div>
+                                <% } %>
 
                             <form action="/login" name="myform" class="px-5 pb-5" method="POST">
                                 <div class="d-flex"> 

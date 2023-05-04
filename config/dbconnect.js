@@ -9,7 +9,7 @@
  * IMPORT ******************************
  * *************************************
  */
-/* import mysql from 'mysql';
+import mysql from 'mysql';
 
 
  const conn$ = mysql.createConnection({
@@ -26,4 +26,4 @@ conn$.connect(function(err) {
     
         console.log('connected as id ' + conn$.threadId);
     });
-export default conn$ */
+export default conn$

@@ -15,11 +15,10 @@ export const getById = async (elt) => {
         conn$.query(`
         SELECT *
         FROM users
-        WHERE email = ?
+        WHERE id = ?
         `, [elt], (e,r)=>{
-            console.log('vv')
+            return r[0]
         })
-
 
 }
 
@@ -29,6 +28,14 @@ export const insertUser = async (username, password, email)=>{
             INSERT INTO users (name, password, email)
             VALUES(?,?,?)
             `, [username, password, email]);
+}
+
+export const getAll = ()=>{
+    const [all] = conn$.query(`
+        SELECT *
+        from users
+    `)
+    return all
 }
 
 

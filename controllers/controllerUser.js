@@ -1,7 +1,9 @@
 import bcrypt  from 'bcryptjs';
-import {User} from '../models/modelUser.js'
 import session from 'express-session';
-import LocalStrategy from 'passport-local'
+import conn$ from '../config/dbconnect.js';
+import { getByEmail, getById, insertUser } from '../repository/userRepo.js';
+import {uuid} from 'uuidv4';
+
 
 
 /**
@@ -14,10 +16,10 @@ export const register = async (req,res)=>{
 
     try{
         //recuperation des name du post et on les mets dans des varible
-        const { username, password, email, password2 } = req.body;
+        let { username, password, email, password2 } = req.body;
 
             //verification si le mail est dans la bd
-           const result = User.findOne({email:email});
+           const result = getByEmail({email:email});
 
         if (result){
 
@@ -43,19 +45,12 @@ export const register = async (req,res)=>{
                     bcrypt.genSalt(10,(err, hash) => {
 
                             if (err) throw err
+                            password = hash
 
-                            const newUser = new User({
-                                username,
-                                email,
-                                password
-                            });
-                            newUser.password = hash
-                            newUser.save()
-                                .then(user => res.render('register', { msg_success: "register good" }))
-                                .catch(er => console.log(er))
-                        }
-
-                    )
+                        insertUser(username, password, email)
+                        res.render('register', { msg_success: "register good" })
+                    })
+                      
                 }
 
         
@@ -77,26 +72,35 @@ export const register = async (req,res)=>{
 export const  loginVer=(req, res, next) => {
 
     const{email,password} = req.body
-    User.findOne({ email:email})
-    .then(user => {
-        
-        if(user){
-            let match = bcrypt.compare(password,user.password)
-            if (match) {
 
-                console.log(user.is_admin)
-                if(user.is_admin === 1){
-                    req.session.is_admin = user.is_admin;
-                    req.session.user_id = user._id
+    conn$.query(`
+        SELECT *
+        FROM users
+        WHERE email = ?
+        `, [email], (e, user) => {
+        if (user[0]) {
+            console.log(user[0])
+            let match = bcrypt.compare(password, user[0].password)
+
+            if (match) {
+                console.log('verif1')
+                if (user[0].is_admin === 1) {
+                    req.session.is_admin = "admin";
+                    req.session.user_id = user[0].id
+                    req.session.user_uuid = uuid()
                     res.redirect('/admin/home')
-                }else{
-                    req.session.user_id = user._id
-                    req.session.user_new = true
+                    console.log('passed')
+
+                } else {
+                    req.session.user_uuid = uuid()
+                    req.session.user_id = user[0].id
+                    console.log('passed simple');
                     res.redirect('/home')
                 }
             }
-        }else{
-            res.render('login',{msg:'not found'})
+        } else {
+            console.log('no pass')
+           return  res.render('login', { msg: 'not found' })
         }
     })
 }
@@ -105,9 +109,16 @@ export const  loginVer=(req, res, next) => {
 
 export const loginload = async (req,res)=> {
     try {
-        const userInfo = await User.findById({_id:req.session.user_id})
-        console.log(userInfo)
-        res.render('home',{user : userInfo})
+
+        const id = req.session.user_id
+            conn$.query(`
+            SELECT *
+            FROM users
+            WHERE id = ?
+            `, [id], (e, r) => {
+                let userInfo = r[0] 
+                res.render('home', { user: userInfo })
+            })
     } catch (error) {
         console.log()
         
@@ -121,7 +132,7 @@ export const deconnexion = (req, res)=>{
         
         req.session.destroy()
         res.redirect('/')
-
+ 
     } catch (error) {
         console.log(error)
     }
