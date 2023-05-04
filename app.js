@@ -8,6 +8,7 @@
  * IMPORT ******************************
  * *************************************
  */
+import { verifRoute } from './config/valid.js';
 import routerUser from './routes/routerUser.js'
 import passport from 'passport'
 import express from 'express';
@@ -28,7 +29,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/dbnew', {useNewUrlParser: true})
 /**
  * APP USE ******************************
  * ********************************
-/* app.use(routerUser) */
+ */
+
+app.use(
+    session({
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true
+    })
+);
+
 
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: false}))
@@ -36,6 +46,7 @@ app.use(express.json())
 app.use(routerUser)
 app.use(routerAdmin)
 app.use(cors())
+// Express-session
 
 
 /**

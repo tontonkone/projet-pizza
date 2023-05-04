@@ -14,8 +14,8 @@ import mongoose from "mongoose";
         required: true
     },
     is_admin: {
-        type: Boolean,
-        default: false
+        type: Number,
+        default: 0
     },
     date: {
         type: Date,

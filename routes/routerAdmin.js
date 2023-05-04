@@ -3,10 +3,11 @@
  */
 import session from "express-session";
 import { deconnexion, loginVer, loginload, register } from '../controllers/controllerUser.js';
-import { isLogOut, isLogin,isLoginAd } from '../middleware/auth.js';
+import { isLogOut, isLogOutAd, isLogin, isLoginAd} from '../middleware/auth.js';
 import { Router } from 'express';
-import {loginLoadAd,verifLogAd} from '../controllers/controllersAdmin.js'
+import {listOfUser, loginLoadAd,verifLogAd} from '../controllers/controllersAdmin.js'
 
+import { User } from '../models/modelUser.js';
 
 
 const routerAdmin = Router();
@@ -19,10 +20,15 @@ routerAdmin.use(
     })
 );
 
+routerAdmin.get('/login',isLogOutAd,(req,res)=>{
+    res.render('login')
+})
 routerAdmin.get('/admin/home', isLoginAd,(req, res)=>{
     loginLoadAd(req,res)
 })
 
-
+routerAdmin.get('/admin/usersList',(req,res)=>{
+    listOfUser(req,res)
+})
 
 export default routerAdmin

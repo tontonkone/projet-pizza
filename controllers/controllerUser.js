@@ -85,12 +85,13 @@ export const  loginVer=(req, res, next) => {
             if (match) {
 
                 console.log(user.is_admin)
-                if(user.is_admin){
+                if(user.is_admin === 1){
                     req.session.is_admin = user.is_admin;
                     req.session.user_id = user._id
                     res.redirect('/admin/home')
                 }else{
                     req.session.user_id = user._id
+                    req.session.user_new = true
                     res.redirect('/home')
                 }
             }
@@ -100,9 +101,18 @@ export const  loginVer=(req, res, next) => {
     })
 }
 
+// on rend la vue aux users
 
-export const loginload = (req,res)=> {
-    res.render('home')
+export const loginload = async (req,res)=> {
+    try {
+        const userInfo = await User.findById({_id:req.session.user_id})
+        console.log(userInfo)
+        res.render('home',{user : userInfo})
+    } catch (error) {
+        console.log()
+        
+    }
+
 }
 
 export const deconnexion = (req, res)=>{

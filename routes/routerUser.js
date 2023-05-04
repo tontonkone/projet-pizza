@@ -3,14 +3,15 @@ import { deconnexion, loginVer, loginload, register } from '../controllers/contr
 import { isLogOut,isLogin } from '../middleware/auth.js';
 import { Router} from 'express';
 import session from 'express-session';
+import { User } from '../models/modelUser.js';
 
 
 
-const router = Router();
+const routerUser = Router();
 
 
 // Express-session
-router.use(
+routerUser.use(
     session({
         secret: 'secret',
         resave: true,
@@ -19,25 +20,26 @@ router.use(
 );
 
 
-router.post('/register',isLogOut, (req,res)=>{
+routerUser.post('/register',isLogOut, (req,res)=>{
     register(req,res)
 });
 
 
-router.post('/login',(req,res,next)=>{
+routerUser.post('/login',(req,res,next)=>{
     loginVer(req,res,next);
 })
 
-router.get('/login',isLogOut,(req,res)=>{
+routerUser.get('/login',isLogOut,(req,res)=>{
     res.render('login')
 })
-router.get('/',isLogOut, (req,res)=>{
+routerUser.get('/',isLogOut, (req,res)=>{
 
     res.render('register')
 })
-router.get('/deconnexion',(req,res)=> {
+routerUser.get('/deconnexion',(req,res)=> {
     deconnexion(req,res);
 })
 
-router.get('/home',isLogin,(req,res)=> loginload(req,res))
-export default router
+routerUser.get('/home',isLogin,(req,res)=> loginload(req,res))
+
+export default routerUser

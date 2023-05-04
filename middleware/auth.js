@@ -2,8 +2,12 @@
 export const isLogin = async (req,res,next)=>{
 
     try {
-        if(!req.session.user_id){
-            res.redirect('/')
+        if(req.session.user_id){
+
+            if(req.session.is_admin){ res.render('admin/home')}
+            
+        }else{
+             res.redirect('/')
         }
         next()
         
@@ -43,3 +47,7 @@ export const isLoginAd = async (req,res,next)=>{
 }
 
 export const isLogOutAd = async(req, res, next)=>{
+
+    
+
+}
