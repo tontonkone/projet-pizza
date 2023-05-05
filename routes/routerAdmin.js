@@ -48,7 +48,7 @@ routerAdmin.get('/admin/employes', (req, res) => {
 })
 
 routerAdmin.get('/admin/menus', (req, res) => {
-    res.render('admin/menuList')
+    listOf(req,res,'menu','admin/menuList')
 })
 routerAdmin.get('/admin/orders', (req, res) => {
     res.render('admin/orderList')
