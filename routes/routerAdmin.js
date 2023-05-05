@@ -39,7 +39,7 @@ routerAdmin.get('/admin/delete_user/:id', (req,res)=>{
     deleteUser(req,res)
 })
 
-routerAdmin.get('/admin/usersList', (req, res) => {
+routerAdmin.get('/admin/users', (req, res) => {
     listOf(req, res,'user','admin/usersList')
 })
 
@@ -54,6 +54,19 @@ routerAdmin.get('/admin/orders', (req, res) => {
     res.render('admin/orderList')
 })
 
+routerAdmin.get('/admin/pizzas',(req,res)=> {
+
+    res.render('admin/pizzasList')
+})
+
+routerAdmin.get('/admin/ingredients', (req, res)=> {
+
+    res.render('admin/ingredientList')
+})
+
+routerAdmin.get('/admin/promotions',(req,res)=> {
+    res.render('admin/promotionList')
+})
 
 //POST
 

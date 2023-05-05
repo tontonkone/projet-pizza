@@ -17,6 +17,8 @@ import mysql from 'mysql';
     user: "root",
     password: "",
     database: "pizzas", 
+    dateStrings: true
+
 })
 conn$.connect(function(err) {
         if (err) {

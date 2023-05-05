@@ -21,7 +21,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <title>
-        Liste de menus
+        Liste des ingredients    
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -52,13 +52,13 @@
                             <div class="card my-4">
                                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                        <h6 class="text-white text-capitalize ps-3">menus</h6>
+                                        <h6 class="text-white text-capitalize ps-3">Liste des ingredients</h6>
                                     </div>
                                 </div>
                                 <div class="card-body px-0 pb-2">
                                     <div class="nav-item d-flex align-items-center m-2">
                                         <a class="btn btn-outline-primary btn-sm mb-0 me-3" href="/admin/addUser">
-                                            Ajouter menu
+                                            Ajouter ingredient
                                         </a>
                                     </div>
                                     <div class="table-responsive p-0">
@@ -67,13 +67,17 @@
                                                 <tr>
                                                     <th
                                                         class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                        Nom de la pizza</th>
+                                                        Clients</th>
                                                     <th
                                                         class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                        Price</th>
+                                                        Adresse</th>
                                                     <th
                                                         class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                        stock</th>
+                                                        status</th>
+                                                    <th
+                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                        Date de création</th>
+                                                    <th class="text-secondary opacity-7"></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -84,30 +88,37 @@
                                                         <td>
                                                             <div class="d-flex px-2 py-1">
                                                                 <div>
-                                                                    <img src="/assets/img/pizza.svg"
+                                                                    <img src="/assets/img/avatar.svg"
                                                                         class="avatar avatar-sm me-3 border-radius-lg"
                                                                         alt="user1">
                                                                 </div>
                                                                 <div class="d-flex flex-column justify-content-center">
                                                                     <h6 class="mb-0 text-sm">
-                                                                        <%= infos[i].name %>
+                                                                        <%= infos[i].firstname %>
                                                                     </h6>
+                                                                    <p class="text-xs text-secondary mb-0">
+                                                                        <%= infos[i].lastname %>
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <p class="text-xs font-weight-bold mb-0">
-                                                                <%= infos[i].price %>
+                                                                <%= infos[i].email %>
+                                                            </p>
+                                                            <p class="text-xs text-secondary mb-0">
+                                                                <%= infos[i].address%>
                                                             </p>
                                                         </td>
-                                                        <% if (infos[i].QuantityStock) { %>
+                                                        <% if (infos[i].is_admin) { %>
                                                             <td class="align-middle text-center text-sm">
                                                                 <span
-                                                                    class="badge badge-sm bg-gradient-success"><%= infos[i].QuantityStock  %></span>
+                                                                    class="badge badge-sm bg-gradient-success">admin</span>
                                                             </td>
                                                             <% } else { %>
                                                                 <td class="align-middle text-center text-sm">
-                                                                    <span class="badge badge-sm bg-gradient-danger">no stock</span>
+                                                                    <span class="badge badge-sm bg-gradient-danger">no
+                                                                        admin</span>
                                                                 </td>
                                                                 <% } %>
                                                                     <td class="align-middle text-center">
