@@ -5,9 +5,7 @@ import session from "express-session";
 import { deconnexion, loginVer, loginload, register } from '../controllers/controllerUser.js';
 import { isLogOut, isLogOutAd, isLogin, isLoginAd} from '../middleware/auth.js';
 import { Router } from 'express';
-import {deleteUser, listOfUser, loginLoadAd,update,verifLogAd,updateUser} from '../controllers/controllersAdmin.js'
-
-import { User } from '../models/modelUser.js';
+import {deleteUser, listOf, loginLoadAd,update,verifLogAd,updateUser, registerAdmin} from '../controllers/controllersAdmin.js'
 
 
 const routerAdmin = Router();
@@ -20,15 +18,13 @@ routerAdmin.use(
     })
 );
 
+//GET 
+
 routerAdmin.get('/login',isLogOutAd,(req,res)=>{
     res.render('login')
 })
 routerAdmin.get('/admin/home', isLoginAd,(req, res)=>{
     loginLoadAd(req,res)
-})
-
-routerAdmin.get('/admin/usersList',(req,res)=>{
-    listOfUser(req,res)
 })
 
 routerAdmin.get('/admin/edit_user/:id',(req,res)=>{
@@ -43,8 +39,27 @@ routerAdmin.get('/admin/delete_user/:id', (req,res)=>{
     deleteUser(req,res)
 })
 
+routerAdmin.get('/admin/usersList', (req, res) => {
+    listOf(req, res,'user','admin/usersList')
+})
+
+routerAdmin.get('/admin/employes', (req, res) => {
+    listOf(req,res,'deliveryman','admin/employeList')
+})
+
+routerAdmin.get('/admin/menus', (req, res) => {
+    res.render('admin/menuList')
+})
+routerAdmin.get('/admin/orders', (req, res) => {
+    res.render('admin/orderList')
+})
+
 
 //POST
+
+routerAdmin.post('/admin/add_user',(req,res)=>{
+    registerAdmin(req,res)
+})
 
 routerAdmin.post('/admin/addUser/', (req,res)=>{
     addUser()

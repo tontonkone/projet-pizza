@@ -16,7 +16,7 @@ import mysql from 'mysql';
     host: "localhost",
     user: "root",
     password: "",
-    database: "tesresto", 
+    database: "pizzas", 
 })
 conn$.connect(function(err) {
         if (err) {

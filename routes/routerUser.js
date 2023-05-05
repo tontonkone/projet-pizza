@@ -36,6 +36,11 @@ routerUser.get('/',isLogOut, (req,res)=>{
 
     res.render('register')
 })
+
+
+routerUser.get('/register',(req,res)=>{
+    res.render('register')
+})
 routerUser.get('/deconnexion',(req,res)=> {
     deconnexion(req,res);
 })

@@ -16,7 +16,7 @@ export const register = async (req,res)=>{
 
     try{
         //recuperation des name du post et on les mets dans des varible
-        let { username, password, email, password2 } = req.body;
+        let { firstname, lastname, password, email, password2,address } = req.body;
 
             //verification si le mail est dans la bd
            const result = getByEmail({email:email});
@@ -30,7 +30,12 @@ export const register = async (req,res)=>{
                     })
                 }
 
-                else if (!username || !email || !password || !password2) {
+                else if (   !firstname ||
+                            !lastname ||
+                            !email || 
+                            !password || 
+                            !password2 || 
+                            !address ) {
                     return res.render('register', { msg: 'Tous les champs sont obligatoire' });
                 }
 
@@ -38,7 +43,7 @@ export const register = async (req,res)=>{
                     return res.render('register', { msg: 'verifier vos mots passes' });
                 }
 
-                else if (password.length < 3) {
+                else if (password.length < 2) {
                     return res.render('register', { msg: 'trop court mdp' });
                 } else {
                     //on hash le mdp avant l'envoi
@@ -47,8 +52,8 @@ export const register = async (req,res)=>{
                             if (err) throw err
                             password = hash
 
-                        insertUser(username, password, email)
-                        res.render('register', { msg_success: "register good" })
+                        insertUser(firstname, lastname, email, password,address)
+                        res.render('register', { msg_success: "Inscription terminée vous pouvez vous connectez" })
                     })
                       
                 }
@@ -69,13 +74,13 @@ export const register = async (req,res)=>{
  * @param {*} next 
  */
 
-export const  loginVer=(req, res, next) => {
+export const  loginVer = async (req, res, next) => {
 
     const{email,password} = req.body
 
     conn$.query(`
         SELECT *
-        FROM users
+        FROM user
         WHERE email = ?
         `, [email], (e, user) => {
         if (user[0]) {
@@ -113,11 +118,14 @@ export const loginload = async (req,res)=> {
         const id = req.session.user_id
             conn$.query(`
             SELECT *
-            FROM users
+            FROM user
             WHERE id = ?
             `, [id], (e, r) => {
-                let userInfo = r[0] 
-                res.render('home', { user: userInfo })
+                if(r){
+                    let userInfo = r[0]
+                    res.render('home', { user: userInfo })             
+                }
+
             })
     } catch (error) {
         console.log()

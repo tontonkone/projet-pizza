@@ -17,8 +17,7 @@
                 <div class="card d-flex mx-auto my-5">
                     <div class="row">
                         <div class="col-md-5 col-sm-12 col-xs-12 c1 p-5">
-                            <div class="row mb-5 m-3"> <img src="https://i.imgur.com/pFfTOwy.jpg" width="70vw" height="55vh" alt=""> </div> 
-                            <img src="https://i.imgur.com/kdE7GKw.jpg" width="120vw" height="210vh" class="mx-auto d-flex" alt="Teacher">
+                            <img src="https://freesvg.org/img/pizza-in-box.png" width="120vw" height="210vh" class="mx-auto d-flex" alt="Teacher">
                             <div class="row justify-content-center">
                                 <div class="w-75 mx-md-5 mx-1 mx-sm-2 mb-5 mt-4 px-sm-5 px-md-2 px-xl-1 px-2">
                                     <h1 class="wlcm">Welcome to your blackboard</h1> 
@@ -44,24 +43,42 @@
                                     <% } %>
                             <form action="/register" class="px-5 pb-5" method="post">
                                 <div class="d-flex"> <img src="https://i.imgur.com/oGcceAH.jpg" height="22px" width="22px" alt="" class="mr-3 mt-2">
-                                    <h3 class="font-weight-bold">Log in</h3>
-                                </div> 
+                                    <h3 class="font-weight-bold">Inscription</h3>
+                                </div>
+                                <label for="firstname">Nom</label> 
                                 <input  
                                     type="text" 
-                                    name="username"  
-                                    placeholder="User">
+                                    name="firstname"  
+                                    placeholder="first name"
+                                    id="firstname">
+                                <label for="lastname">Prenom</label>
+                                <input 
+                                    type="text" 
+                                    name="lastname" 
+                                    placeholder="last name">
+                                <label for="email">Email</label>
                                 <input 
                                     type="email" 
                                     name="email"  
-                                    placeholder="Email">
+                                    placeholder="Email"
+                                    id="email">
+                                <label for="psw">Mot de passe</label>
                                 <input 
                                     type="password" 
                                     name="password" 
-                                    placeholder="Password">
+                                    placeholder="Password"
+                                    id="psw">
+                                <label for="psw2">Retaper votre mot de passe </label>
                                 <input 
                                     type="password" 
                                     name="password2"
                                     placeholder="Password">
+                                <label for="address">Adresse</label>
+                                <input 
+                                    type="text" 
+                                    name="address" 
+                                    id="adress"
+                                    placeholder="Votre adresse">
                                 <input class="text-white text-weight-bold bt"  type="submit" value="envoyer">
                                 <a class="ac" href="/login">Login</a> 
                             </form>
