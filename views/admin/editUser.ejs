@@ -78,14 +78,19 @@
                                         name="lastname" 
                                         value="<%= user.lastname %>">
                             </div>
+                    <% if(locals.userAd){  %>
+                        <%      for(ad of userAd){%>
                             <div class="form-group col-md-6">
+                            <input type="hidden" name="ids" value="<%= ad.id %>">
                                 <label for="inputPassword4">Adresse</label>
                                 <input type="text"
                                          class="form-control" 
                                          id="inputPassword4" 
                                          name="address" 
-                                         value="<%= user.address %>">
+                                         value="<%= ad.addressName %>">
                             </div>
+                         <%      }
+                    } %>
                         </div>
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>

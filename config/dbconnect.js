@@ -16,8 +16,9 @@ import mysql from 'mysql';
     host: "localhost",
     user: "root",
     password: "",
-    database: "pizzas", 
-    dateStrings: true
+    database: "testp", 
+    dateStrings: true,
+     multipleStatements: true
 
 })
 conn$.connect(function(err) {

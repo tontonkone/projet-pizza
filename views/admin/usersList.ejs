@@ -73,11 +73,9 @@
                   </thead>
                   <tbody>
                     <!-- debut -->
-
                 <% if (locals.infos){ 
 
                   for(let i =0; i < infos.length; i++){
-
                   %>
                     <tr>
                       <td>
@@ -93,7 +91,14 @@
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0"><%= infos[i].email %></p>
-                        <p class="text-xs text-secondary mb-0"><%= infos[i].address%></p>
+                        <p class="text-xs text-secondary mb-0"><%= infos[i].address %></p>
+                              <% if(locals.add){ for (let a of add) { %>
+                                <% if (infos[i].email === a.email) { %>
+                                  
+                                  <p class="text-xs text-secondary mb-0"><%= a.addressName %></p>
+                                <% } } }%>
+
+                        
                       </td>
                       <% if (infos[i].is_admin) { %>
                       <td class="align-middle text-center text-sm">

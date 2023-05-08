@@ -1,29 +1,25 @@
 /**
  * IMPORT
  */
+import { User } from '../models/modelUser.js';
+import bcrypt from 'bcryptjs';
+import conn$ from '../config/dbconnect.js';
+import { getAll,getByEmail , insertUser, insertEmploye} from '../repository/userRepo.js';
 
-import { User } from '../models/modelUser.js'
-import bcrypt from 'bcryptjs'
-import conn$ from '../config/dbconnect.js'
-import { getAll,getByEmail , insertUser} from '../repository/userRepo.js'
+/**
+ * SECTION GENERALE
+ * **************************************************************************************
+ * **************************************************************************************
+ */
+
+/**
+ * connexion pour gerer les sessions
+ * @param {*} req 
+ * @param {*} res 
+ */
 
 
-
-export const listOf = async (req,res,tab,red)=>{
-
-    try {
-        conn$.query(`select * from ${tab} ORDER BY id DESC`, (e,r)=> {
-            res.render(red, { infos:r })
-        })
-  
-         
-    } catch (error) {
-        console.log(error)
-    }
-}
- 
-
-export const loginLoadAd =  async (req,res)=>{
+export const loginLoadAd = async (req, res) => {
 
     try {
         const id = req.session.user_id
@@ -31,20 +27,24 @@ export const loginLoadAd =  async (req,res)=>{
             SELECT *
             FROM user
             WHERE id = ?
-            `, [id], (e,r) => {
+            `, [id], (e, r) => {
             let userInfo = r[0]
 
             res.render('admin/home', { user: userInfo })
-            
+
         })
-        
+
     } catch (error) {
         console.log()
 
     }
 }
 
-
+/**
+ * verifier si user est connecter 
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const verifLogAd = async (req, res) => {
     try {
 
@@ -54,18 +54,80 @@ export const verifLogAd = async (req, res) => {
 
 }
 
-export const addUser = async (req, res) =>{
-    const {username,password,email} = req.body;
+/**
+ * SECTION LIST OF 
+ * **************************************************************************************
+ * **************************************************************************************
+ */
 
-    insertUser(username,password,email);
-    res.redirect('/admin/home',{msg_succes:"nouveaux utilisateur crée "})
+/**
+ * Function general de get all
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} tab 
+ * @param {*} red 
+ */
+export const listOf = async (req,res,tab,red)=>{
+
+    try { 
+
+        conn$.query(`select * from ${tab} ORDER BY id DESC`, (e,r)=> {
+            res.render(red, { infos:r })
+        })
+  
+         
+    } catch (error) {
+        console.log(error)
+    }
 }
+
+/**
+ * list des users 
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const listOfUser = async (req, res) => {
+
+    try {
+
+        conn$.query(`select * from user ORDER BY id DESC`, (e, r) => {
+
+             conn$.query(`
+                    select u.*,a.*
+                    from user as u
+                    left join address as a
+                    on u.id = a.user_id
+
+                `, (er, resu) => {
+                res.render('admin/usersList', { infos:r , add: resu})
+
+            })
+            
+        })
+
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+/**
+ * SECTION UPDATE
+ * **************************************************************************************
+ * **************************************************************************************
+ */
+
+/**
+ * editer un user 
+ * @param {*} req 
+ * @param {*} res 
+ */
  
 export const updateUser = async (req, res)=>{
 
     const { id } = req.params;
-    const {firstname,lastname,address,email}= req.body
-
+    const {firstname,lastname,address,email,ids}= req.body
+    
     conn$.query(`
     UPDATE user
     SET ?
@@ -73,32 +135,89 @@ export const updateUser = async (req, res)=>{
     `, [{firstname: firstname,
          email: email,
          lastname: lastname,
-         address: address
         }, id]);
-    res.redirect("/admin/usersList");
-}
 
-export const deleteUser = async (req, res) => {
-
-    console.log(req.params)
-    const { id } = req.params;
-    const result = conn$.query(`
-    DELETE FROM user
-    WHERE id = ?
-    `, [id]);
-    if (result.affectedRow === 1) {
-        res.json({ message: "menu supprimé" })
+    for (let addr of address) {
+        let index = ids.shift()
+        conn$.query(`
+                update address
+                SET ? 
+                WHERE id = ?
+                `, [{addressName:addr}, index])
     }
-    res.redirect('/admin/usersList')
+    res.redirect("/admin/users");  
 }
+
+
+/**
+ * editer un livreur
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const updateEmploye = async (req,res)=> {
+    const { id } = req.params;
+    const { firstname, lastname, email } = req.body
+
+    conn$.query(`
+    UPDATE deliveryman
+    SET ?
+    WHERE id = ?
+    `, [{
+        firstName: firstname,
+        email: email,
+        lastName: lastname,
+    }, id]);
+    
+    res.redirect("/admin/employes");
+}
+ /**
+  * Recuperer les infos de l'user et son adresse ensuite rediriger vers page edit 
+  * @param {*} req 
+  * @param {*} res 
+  */
 
 export async function update(req, res) {
     const { id } = req.params;
     conn$.query("SELECT * FROM user WHERE id = ?", 
-    [id],(err, resul)=>{
-        res.render("admin/editUser", { user: resul[0] });
-        });   
+        [id],(err, resul)=>{
+            
+        conn$.query(`
+                    select u.*,a.*
+                    from user as u
+                    left join address as a
+                    on u.id = a.user_id
+                    where a.user_id = ?
+                `,[id], (er, resu) => {
+                    console.log(resu)
+            res.render("admin/editUser", { user: resul[0], userAd:resu });
+        })
+    });   
 };
+
+/**
+ * SECTION ADD
+ * **************************************************************************************
+ * **************************************************************************************
+ */
+
+/**
+ * Ajouter un user 
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const addUser = async (req, res) => {
+    const { username, password, email, id } = req.body;
+
+    insertUser(username, password, email);
+    res.redirect('/admin/home', { msg_succes: "nouveaux utilisateur crée " })
+}
+
+/**
+ * Ajout de ueser 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 
 export const registerAdmin = async (req, res) => {
 
@@ -158,4 +277,70 @@ export const registerAdmin = async (req, res) => {
         console.log(error)
     }
 
+}
+
+
+/**
+ * ajout de livreur 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const registerEmploye = (req,res)=>{
+    try {
+        //recuperation des name du post et on les mets dans des varible
+        let { firstname, lastname, email} = req.body;
+
+        //verification si le mail est dans la bd
+        const result = getByEmail({ email: email });
+
+        if (result) {
+
+            if (result.length > 0) {
+
+                return res.render('register', {
+                    msg: 'cet email existe'
+                })
+            }
+
+            else if (!firstname ||
+                !lastname ||
+                !email) {
+                return res.render('admin/addEmploye', { msg: 'Tous les champs sont obligatoire' }); 
+            } else {
+
+                    insertEmploye(firstname, lastname, email)
+                    res.render('admin/addEmploye', { msg_success: "Livreur ajouté" })
+            }
+
+
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+/**
+ * SECTION DELETE
+ * **************************************************************************************
+ * **************************************************************************************
+ */
+
+/**
+ * function generale de delete 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} elt 
+ * @param {*} red 
+ */
+
+export const deleteElt = async (req, res, elt, red) => {
+
+    const { id } = req.params;
+    const result = conn$.query(`
+    DELETE FROM ${elt}
+    WHERE id = ?
+    `, [id]);
+    res.redirect(red)
 }

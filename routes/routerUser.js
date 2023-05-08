@@ -47,4 +47,4 @@ routerUser.get('/deconnexion',(req,res)=> {
 
 routerUser.get('/home',isLogin,(req,res)=> loginload(req,res))
 
-export default routerUser
+export default routerUser 

@@ -58,7 +58,7 @@
                                 <div class="card-body px-0 pb-2">
                                     <div class="table-responsive p-0">
                                         <div class="nav-item d-flex align-items-center m-2">
-                                            <a class="btn btn-outline-primary btn-sm mb-0 me-3" href="/admin/addUser">
+                                            <a class="btn btn-outline-primary btn-sm mb-0 me-3" href="/admin/add_employe">
                                                 Ajouter un livreur
                                             </a>
                                         </div>
@@ -94,10 +94,10 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column justify-content-center">
                                                                     <h6 class="mb-0 text-sm">
-                                                                        <%= infos[i].firstname %>
+                                                                        <%= infos[i].firstName %>
                                                                     </h6>
                                                                     <p class="text-xs text-secondary mb-0">
-                                                                        <%= infos[i].lastname %>
+                                                                        <%= infos[i].lastName %>
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -115,12 +115,12 @@
                                                                 <span
                                                                     class="badge badge-sm bg-gradient-success">admin</span>
                                                             </td>
-                                                            <% } else { %>
+                                                        <% }
+                                                        else { %>
                                                                 <td class="align-middle text-center text-sm">
-                                                                    <span class="badge badge-sm bg-gradient-danger">no
-                                                                        admin</span>
+                                                                    <span class="badge badge-sm bg-gradient-danger">free</span>
                                                                 </td>
-                                                                <% } %>
+                                                        <% } %>
                                                                     <td class="align-middle text-center">
                                                                         <span
                                                                             class="text-secondary text-xs font-weight-bold">
@@ -128,7 +128,7 @@
                                                                         </span>
                                                                     </td>
                                                                     <td class="align-middle">
-                                                                        <a href="/admin/edit_user/<%= infos[i].id %>"
+                                                                        <a href="/admin/edit_employe/<%= infos[i].id %>"
                                                                             class="text-secondary font-weight-bold text-xs"
                                                                             data-toggle="tooltip"
                                                                             data-original-title="Edit user">
@@ -136,7 +136,7 @@
                                                                         </a>
                                                                     </td>
                                                                     <td class="align-middle">
-                                                                        <a href="/admin/delete_user/<%= infos[i].id %>"
+                                                                        <a href="/admin/delete_employe/<%= infos[i].id %>"
                                                                             class="text-secondary font-weight-bold text-xs"
                                                                             data-toggle="tooltip">
                                                                             delete
