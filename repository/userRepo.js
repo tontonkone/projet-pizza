@@ -11,17 +11,14 @@ export const getByEmail = async (elt) => {
             `, [elt])
 }
 
-export const getById = async (elt) => {
-    conn$.query(`
-        SELECT *
-        FROM user
-        WHERE id = ?
-        `, [elt], (e, r) => {
-        return r[0]
-    })
 
-}
-
+/**
+ * Obtenir les infos par id 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} elt 
+ * @param {*} red 
+ */
 export const getInfo = async (req,res,elt,red)=>{
     const { id } = req.params;
     conn$.query(`SELECT * FROM ${elt} WHERE id = ?`, 
@@ -30,7 +27,15 @@ export const getInfo = async (req,res,elt,red)=>{
     });
 
 }
-
+/**
+ * insertion de user 
+ * @param {string} firstname 
+ * @param {string} lastname 
+ * @param {string} email 
+ * @param {*} password 
+ * @param {string} address 
+ * @param {*} is_admin 
+ */
 
 export const insertUser = async (firstname, lastname, email, password, address, is_admin = 0) => {
     conn$.query(`
@@ -42,22 +47,23 @@ export const insertUser = async (firstname, lastname, email, password, address, 
     });
 }
 
+/**
+ * Insertion d'employé 
+ * @param {*} firstname 
+ * @param {*} lastname 
+ * @param {*} email 
+ */
 export const insertEmploye = async (firstname,lastname,email)=>{
     conn$.query(`
             INSERT INTO deliveryman (firstName, lastName, email,createdate)
             VALUES(?,?,?, NOW())
             `, [firstname, lastname, email]);
 }
-
-export const getAll = () => {
-    const [all] = conn$.query(` 
-        SELECT *
-        from user
-    `)
-    return all
-}
-
-
+/**
+ * Insertion dans adresse
+ * @param {*} id 
+ * @param {*} tab 
+ */
 export const insertTab = async (id, tab) => {
     for (let t of tab) {
         conn$.query(`

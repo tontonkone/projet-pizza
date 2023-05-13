@@ -4,7 +4,8 @@
 import { User } from '../models/modelUser.js';
 import bcrypt from 'bcryptjs';
 import conn$ from '../config/dbconnect.js';
-import { getAll,getByEmail , insertUser, insertEmploye} from '../repository/userRepo.js';
+import {getByEmail , insertUser, insertEmploye} from '../repository/userRepo.js';
+import { insertProduct } from '../repository/productRepo.js';
 
 /**
  * SECTION GENERALE
@@ -79,29 +80,70 @@ export const listOf = async (req,res,tab,red)=>{
     } catch (error) {
         console.log(error)
     }
+
 }
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} infOne // table 1
+ * @param {*} infTwo  // jointure sur  table2
+ * @param {*} red // la redirection
+ * @param {*} common // le nom du produit 
+ */
+export const listOfThings = async (req, res, infOne, infTwo, red,common) => {
+
+    try {
+
+        conn$.query(`select * from ${infOne} ORDER BY id DESC`, (e, r) => {
+            if (infTwo) {
+                conn$.query(`
+                    select u.*,a.*
+                    from ${infOne} as u
+                    left join ${infTwo} as a
+                    on u.id = a.${infOne}_id
+                    WHERE ${infOne}_name LIKE '${common}%'
+
+                `, (er, resu) => {
+                    console.log(resu)
+                    res.render(red, { infos: resu, add: resu, details:common })
+                })
+            } else {
+                res.render(red, { infos: r, details: common  })
+            }
+
+        })
+
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 /**
  * list des users 
  * @param {*} req 
  * @param {*} res 
  */
-export const listOfUser = async (req, res) => {
+export const listOfAll = async (req, res,infOne, infTwo,red) => {
 
     try {
 
-        conn$.query(`select * from user ORDER BY id DESC`, (e, r) => {
-
-             conn$.query(`
+        conn$.query(`select * from ${infOne} ORDER BY id DESC`, (e, r) => {
+            if(infTwo){
+                conn$.query(`
                     select u.*,a.*
-                    from user as u
-                    left join address as a
-                    on u.id = a.user_id
-
+                    from ${infOne} as u
+                    left join ${infTwo} as a
+                    on u.id = a.${infOne}_id
                 `, (er, resu) => {
-                res.render('admin/usersList', { infos:r , add: resu})
-
-            })
+                    res.render(red, { infos: r, add: resu })
+                })
+            }else{
+                res.render(red, { infos: r })
+            }
             
         })
 
@@ -201,15 +243,24 @@ export async function update(req, res) {
  */
 
 /**
- * Ajouter un user 
+ * ajouter menu 
  * @param {*} req 
  * @param {*} res 
+ * @returns 
  */
-export const addUser = async (req, res) => {
-    const { username, password, email, id } = req.body;
+export const addAllElts = async (req,res)=>{
+    const { category_id, name, QuantityStock, price} = req.body;
 
-    insertUser(username, password, email);
-    res.redirect('/admin/home', { msg_succes: "nouveaux utilisateur crée " })
+    if(!category_id ||
+        !name||
+        !QuantityStock||
+        !price){
+        return res.render('admin/addMenu', { msg: 'Tous les champs sont obligatoire' });
+    }else{
+        insertProduct(category_id, name, QuantityStock, price);
+        res.redirect('/admin/menus')   
+    }
+
 }
 
 /**
@@ -342,5 +393,5 @@ export const deleteElt = async (req, res, elt, red) => {
     DELETE FROM ${elt}
     WHERE id = ?
     `, [id]);
-    res.redirect(red)
+    res.redirect(red) 
 }

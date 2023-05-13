@@ -1,7 +1,7 @@
 import bcrypt  from 'bcryptjs';
 import session from 'express-session';
 import conn$ from '../config/dbconnect.js';
-import { getByEmail, getById, insertTab, insertUser } from '../repository/userRepo.js';
+import { getByEmail, insertTab, insertUser } from '../repository/userRepo.js';
 import {uuid} from 'uuidv4';
 
 
