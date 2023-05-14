@@ -200,6 +200,7 @@ export const updateEmploye = async (req,res)=> {
     const { id } = req.params;
     const { firstname, lastname, email } = req.body
 
+    
     conn$.query(`
     UPDATE deliveryman
     SET ?
@@ -248,17 +249,17 @@ export async function update(req, res) {
  * @param {*} res 
  * @returns 
  */
-export const addAllElts = async (req,res)=>{
+export const addAllElts = async (req,res,red)=>{
     const { category_id, name, QuantityStock, price} = req.body;
 
     if(!category_id ||
         !name||
         !QuantityStock||
         !price){
-        return res.render('admin/addMenu', { msg: 'Tous les champs sont obligatoire' });
+        return res.render('admin/addGroup', { msg: 'Tous les champs sont obligatoire' });
     }else{
         insertProduct(category_id, name, QuantityStock, price);
-        res.redirect('/admin/menus')   
+        res.redirect(red)   
     }
 
 }

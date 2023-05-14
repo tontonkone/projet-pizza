@@ -7,12 +7,13 @@ import { isLogOut, isLogOutAd, isLogin, isLoginAd} from '../middleware/auth.js';
 import { Router } from 'express';
 import { listOfAll, loginLoadAd,update,updateUser,registerAdmin, deleteElt, updateEmploye,registerEmploye, listOfThings, addAllElts} from '../controllers/controllersAdmin.js'
 import { getInfo } from "../repository/userRepo.js";
+import { getProduct, updateProduct } from "../repository/productRepo.js";
 
 
 const routerAdmin = Router();
 
 routerAdmin.use(
-    session({
+    session({ 
         secret: 'secret',
         resave: true,   
         saveUninitialized: true
@@ -46,6 +47,27 @@ routerAdmin.get('/admin/edit_employe/:id', (req, res) => {
     getInfo(req,res,'deliveryman','admin/editEmploye')
 })
 
+// edit menu
+routerAdmin.get('/admin/edit_menu/:id', (req, res) => {
+    getProduct(req, res, 'menu', 'admin/editGroup')
+})
+
+// edit pizza
+routerAdmin.get('/admin/edit_pizza/:id', (req, res) => {
+    getProduct(req, res, 'pizza', 'admin/editGroup')
+})
+
+// edit desserts
+routerAdmin.get('/admin/edit_dessert/:id', (req, res) => {
+    getProduct(req, res, 'dessert', 'admin/editGroup')
+})
+
+// edit boissons
+routerAdmin.get('/admin/edit_boisson/:id', (req, res) => {
+    getProduct(req, res, 'boisson', 'admin/editGroup')
+})
+
+
 /**
  * ROUTER AJOUT *********************************************************************
  * ***********************************************************************************
@@ -62,22 +84,22 @@ routerAdmin.get('/admin/add_employe', (req, res) => {
 
 //ajout menu
 routerAdmin.get('/admin/add_menu', (req, res) => {
-    res.render('admin/addGroup',{info: 'menu'})
+    res.render('admin/addGroup',{info: 'menu',id :71})
 })
 
 //ajout pizza
 routerAdmin.get('/admin/add_pizza', (req, res) => {
-    res.render('admin/addGroup', { info: 'pizza' })
+    res.render('admin/addGroup', { info: 'pizza', id:70 })
 })
 
 //ajout boisson
 routerAdmin.get('/admin/add_boisson', (req, res) => {
-    res.render('admin/addGroup', { info: 'boisson' })
+    res.render('admin/addGroup', { info: 'boisson', id:73})
 })
 
 //ajout dessert
 routerAdmin.get('/admin/add_dessert', (req, res) => {
-    res.render('admin/addGroup', { info: 'dessert' })
+    res.render('admin/addGroup', { info: 'dessert', id:72 })
 })
 
 /**
@@ -202,11 +224,21 @@ routerAdmin.post('/admin/add_employe', (req, res) => {
 })
 
 routerAdmin.post('/admin/add_menu', (req, res) => {
-    addAllElts(req, res)
+    addAllElts(req, res, '/admin/menus')
 })
 
+routerAdmin.post('/admin/add_pizza', (req, res) => {
+    addAllElts(req, res, '/admin/pizzas')
+})
+
+routerAdmin.post('/admin/add_boisson', (req, res) => {
+    addAllElts(req, res, '/admin/boissons')
+})
+routerAdmin.post('/admin/add_dessert', (req, res) => {
+    addAllElts(req, res, '/admin/desserts')
+})
 /**
- * post add *******************************************************
+ * post editer *******************************************************
  * ****************************************************************
  */
 
@@ -218,6 +250,20 @@ routerAdmin.post('/admin/edit_employe/:id', (req, res) => {
     updateEmploye(req, res)
 }) 
 
+routerAdmin.post('/admin/edit_menu/:id', (req, res) => {
+    updateProduct(req, res,'/admin/menus')
+}) 
+
+routerAdmin.post('/admin/edit_pizza/:id', (req, res) => {
+    updateProduct(req, res, '/admin/pizzas')
+})
+
+routerAdmin.post('/admin/edit_dessert/:id', (req, res) => {
+    updateProduct(req, res, '/admin/desserts')
+})
+routerAdmin.post('/admin/edit_dessert/:id', (req, res) => {
+    updateProduct(req, res, '/admin/desserts')
+})
 
  
 export default routerAdmin  

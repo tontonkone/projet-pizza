@@ -60,8 +60,8 @@
                                     <%= msg_success %>
                                 </div>
                                 <% } %>
-                                    <form action="/admin/add_menu" method="POST">
-                                        <input type="hidden" name="category_id" value="71">
+                                    <form action="/admin/add_<%= info %>" method="POST">
+                                        <input type="hidden" name="category_id" value=<%=id %>>
                                         <div class="form-row">
                                             <div class="form-group">
                                                 <label for="firstname">Nom du <%= info %> </label>
@@ -198,6 +198,4 @@
         <script async defer src="https://buttons.github.io/buttons.js"></script>
         <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
         <script src="../assets/js/material-dashboard.min.js?v=3.0.5"></script>
-</body>
-
-</html>
+<%- include('./includes/foot') %>

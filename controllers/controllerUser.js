@@ -5,7 +5,6 @@ import { getByEmail, insertTab, insertUser } from '../repository/userRepo.js';
 import {uuid} from 'uuidv4';
 
 
-
 /**
  * inscriptions 
  * @param {*} req 
@@ -52,8 +51,9 @@ export const register = async (req,res)=>{
                             if (err) throw err
                             password = hash
 
-                        insertUser(firstname, lastname, email, password,address)
-                        res.render('register', { msg_success: "Inscription terminée vous pouvez vous connectez" })
+                        insertUser(firstname, lastname, email, password,address);
+
+                        res.render('register', { msg_success: "Inscription terminée vous pouvez vous connectez" });
                     })
                       
                 }
@@ -91,16 +91,25 @@ export const  loginVer = async (req, res, next) => {
                 console.log('verif1')
                 if (user[0].is_admin === 1) {
                     req.session.is_admin = "admin";
-                    req.session.user_id = user[0].id
-                    req.session.user_uuid = uuid()
-                    res.redirect('/admin/home')
-                    console.log('passed')
+                    req.session.user_id = user[0].id;
+                    req.session.user_firstname = user[0].firstname;
+                    req.session.user_lastname = user[0].lastname;
+                    req.session.user_uuid = uuid();
+                    
+                    const eventEmit = req.app.get('eventEmit');
+                    
+                    eventEmit.emit('register', user[0].firstname,user[0].lastname);
+                    res.redirect('/admin/home');
+                    console.log('passed');
 
                 } else {
-                    req.session.user_uuid = uuid()
-                    req.session.user_id = user[0].id
-                    console.log('passed simple');
-                    res.redirect('/home')
+                    req.session.user_uuid = uuid(); 
+                    req.session.user_id = user[0].id;
+                    //creer un event 
+                   
+                    //envoie de l'event 
+                    eventEmit.emit('register', user[0].firstname,user[0].lastname);
+                    res.redirect('/home'); 
                 }
             }
         } else {

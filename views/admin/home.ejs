@@ -46,9 +46,13 @@
 
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-    <%- include('./includes/nav')%>
+        <%- include('./includes/nav')%>
    
         <!-- End Navbar -->
+
+        <h1 class="mt-4">Dashboard</h1>
+        <p class="lead mb-3">Welcome <%= user.firstname%> <%= user.lastname%>
+        </p>
 
     </main>
     <div class="fixed-plugin">
@@ -163,6 +167,4 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.0.5"></script>
-</body>
-
-</html>
+<%- include('./includes/foot') %>

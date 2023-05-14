@@ -1,5 +1,6 @@
 const danger = document.getElementById('pop');
-const succes = document.getElementById('pop-suc')
+const succes = document.getElementById('pop-suc');
+const connexion = document.getElementById('connexion');
 
 if(succes || danger){
 
@@ -12,9 +13,19 @@ if(succes || danger){
     }
 }
 
-function removeData(data){
-    setTimeout((e) => {
+
+const socket = io()
+
+socket.on("client:connecte:ok", () => {
+    console.log('Message bien reçu du serveur !')
+})
+
+socket.on('con', () => {
+    console.log('Hello reçu du serveur')
+})
+
+function removeData(data) {
+    setTimeout((e) => {  
         data.remove()
-        e.target.value = ""
     }, 4000);
 }
