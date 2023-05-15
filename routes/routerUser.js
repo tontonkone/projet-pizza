@@ -34,7 +34,7 @@ routerUser.get('/login',isLogOut,(req,res)=>{
 })
 routerUser.get('/',isLogOut, (req,res)=>{
 
-    res.render('register')
+    res.render('login')
 })
 
 

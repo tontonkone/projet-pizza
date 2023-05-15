@@ -11,6 +11,8 @@ import {uuid} from 'uuidv4';
  * @param {*} res 
  * @returns 
  */
+
+
 export const register = async (req,res)=>{
 
     try{
@@ -78,13 +80,15 @@ export const  loginVer = async (req, res, next) => {
 
     const{email,password} = req.body
 
+    const eventEmit = req.app.get('eventEmit');
     conn$.query(`
         SELECT *
         FROM user
         WHERE email = ?
         `, [email], (e, user) => {
         if (user[0]) {
-            console.log(user[0])
+
+
             let match = bcrypt.compare(password, user[0].password)
 
             if (match) {
@@ -96,24 +100,26 @@ export const  loginVer = async (req, res, next) => {
                     req.session.user_lastname = user[0].lastname;
                     req.session.user_uuid = uuid();
                     
-                    const eventEmit = req.app.get('eventEmit');
                     
-                    eventEmit.emit('register', user[0].firstname,user[0].lastname);
+                    eventEmit.emit('userConnected', {name:user[0].firstname,lastname: user[0].lastname});
                     res.redirect('/admin/home');
                     console.log('passed');
 
                 } else {
                     req.session.user_uuid = uuid(); 
                     req.session.user_id = user[0].id;
+
+                    req.session.user_firstname = user[0].firstname;
+                    req.session.user_lastname = user[0].lastname;
                     //creer un event 
                    
                     //envoie de l'event 
-                    eventEmit.emit('register', user[0].firstname,user[0].lastname);
+                    eventEmit.emit('userConnected', {name:user[0].firstname,lastname: user[0].lastname});
                     res.redirect('/home'); 
                 }
             }
         } else {
-            console.log('no pass')
+            console.log('no pass') 
            return  res.render('login', { msg: 'not found' })
         }
     })
@@ -141,15 +147,15 @@ export const loginload = async (req,res)=> {
         
     }
 
-}
+} 
 
 export const deconnexion = (req, res)=>{
-
+    const eventEmit = req.app.get('eventEmit');
     try {
-        
+        eventEmit.emit('userDeconnect', { name: req.session.user_firstname, lastname: req.session.user_lastname });
         req.session.destroy()
         res.redirect('/')
- 
+        
     } catch (error) {
         console.log(error)
     }
